@@ -1,66 +1,57 @@
 #include <iostream>
-#include <iomanip>
+#include <string>
 using namespace std;
 
-
-void getDimensions(double& length, double& width);
-double calculatePerimeter(double length, double width);
-double calculateArea(double length, double width);
-bool processAnotherRectangle();
+int getAccidents(const string& region);
+string findSafestRegion(int north, int south, int east, int west, int central);
 
 int main() {
-    double length, width;
+    int north, south, east, west, central;
 
-    do {
-        
-        getDimensions(length, width);
+    north = getAccidents("North");
+    south = getAccidents("South");
+    east = getAccidents("East");
+    west = getAccidents("West");
+    central = getAccidents("Central");
 
-        
-        double perimeter = calculatePerimeter(length, width);
-        double area = calculateArea(length, width);
+    string safestRegion = findSafestRegion(north, south, east, west, central);
+    cout << "\nThe safest region is: " << safestRegion << "\n";
 
-        cout << fixed << setprecision(2);
-        cout << "\nRectangle Properties:\n";
-        cout << "Perimeter: " << perimeter << "\n";
-        cout << "Area: " << area << "\n";
-
-    } while (processAnotherRectangle());
-
-    cout << "\nThank you for using the Rectangle Properties program!\n";
     return 0;
 }
 
-
-void getDimensions(double& length, double& width) {
+int getAccidents(const string& region) {
+    int accidents;
     do {
-        cout << "Enter the length of the rectangle: ";
-        cin >> length;
-        if (length < 0) {
-            cout << "Length cannot be negative. Please try again.\n";
+        cout << "Enter the number of reported accidents in the " << region << " region: ";
+        cin >> accidents;
+        if (accidents < 0) {
+            cout << "Number of accidents cannot be negative. Please try again.\n";
         }
-    } while (length < 0);
-
-    do {
-        cout << "Enter the width of the rectangle: ";
-        cin >> width;
-        if (width < 0) {
-            cout << "Width cannot be negative. Please try again.\n";
-        }
-    } while (width < 0);
+    } while (accidents < 0);
+    return accidents;
 }
 
-double calculatePerimeter(double length, double width) {
-    return 2 * (length + width);
-}
+string findSafestRegion(int north, int south, int east, int west, int central) {
+    int minAccidents = north;
+    string safest = "North";
 
+    if (south < minAccidents) {
+        minAccidents = south;
+        safest = "South";
+    }
+    if (east < minAccidents) {
+        minAccidents = east;
+        safest = "East";
+    }
+    if (west < minAccidents) {
+        minAccidents = west;
+        safest = "West";
+    }
+    if (central < minAccidents) {
+        minAccidents = central;
+        safest = "Central";
+    }
 
-double calculateArea(double length, double width) {
-    return length * width;
-}
-
-bool processAnotherRectangle() {
-    char choice;
-    cout << "\nDo you want to process another rectangle? (Y/N): ";
-    cin >> choice;
-    return (choice == 'Y' || choice == 'y');
+    return safest;
 }
