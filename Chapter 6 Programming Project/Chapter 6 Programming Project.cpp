@@ -1,57 +1,30 @@
 #include <iostream>
-#include <string>
+#include <iomanip>
 using namespace std;
 
-int getAccidents(const string& region);
-string findSafestRegion(int north, int south, int east, int west, int central);
+void displayTemperatureTable();
+double fahrenheitToCelsius(double fahrenheit);
 
 int main() {
-    int north, south, east, west, central;
+    cout << "Fahrenheit to Celsius Temperature Table" << endl;
+    cout << "------------------------------------" << endl;
 
-    north = getAccidents("North");
-    south = getAccidents("South");
-    east = getAccidents("East");
-    west = getAccidents("West");
-    central = getAccidents("Central");
+    displayTemperatureTable();
 
-    string safestRegion = findSafestRegion(north, south, east, west, central);
-    cout << "\nThe safest region is: " << safestRegion << "\n";
-
+    cout << "\nThank you for using the Celsius Temperature Table program!\n";
     return 0;
 }
 
-int getAccidents(const string& region) {
-    int accidents;
-    do {
-        cout << "Enter the number of reported accidents in the " << region << " region: ";
-        cin >> accidents;
-        if (accidents < 0) {
-            cout << "Number of accidents cannot be negative. Please try again.\n";
-        }
-    } while (accidents < 0);
-    return accidents;
+void displayTemperatureTable() {
+    cout << setw(15) << "Fahrenheit" << setw(15) << "Celsius" << endl;
+    cout << "------------------------------------" << endl;
+
+    for (int fahrenheit = 0; fahrenheit <= 20; ++fahrenheit) {
+        double celsius = fahrenheitToCelsius(fahrenheit);
+        cout << setw(15) << fahrenheit << setw(15) << fixed << setprecision(2) << celsius << endl;
+    }
 }
 
-string findSafestRegion(int north, int south, int east, int west, int central) {
-    int minAccidents = north;
-    string safest = "North";
-
-    if (south < minAccidents) {
-        minAccidents = south;
-        safest = "South";
-    }
-    if (east < minAccidents) {
-        minAccidents = east;
-        safest = "East";
-    }
-    if (west < minAccidents) {
-        minAccidents = west;
-        safest = "West";
-    }
-    if (central < minAccidents) {
-        minAccidents = central;
-        safest = "Central";
-    }
-
-    return safest;
+double fahrenheitToCelsius(double fahrenheit) {
+    return (5.0 / 9.0) * (fahrenheit - 32);
 }
