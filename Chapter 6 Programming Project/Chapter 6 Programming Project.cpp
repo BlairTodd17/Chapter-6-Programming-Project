@@ -1,70 +1,99 @@
 #include <iostream>
 #include <iomanip>
-#include <algorithm>
 using namespace std;
 
-=void getScores(double scores[], int size);
-double calculateFinalScore(double scores[], int size);
-double findHighest(double scores[], int size);
-double findLowest(double scores[], int size);
+int getNumberOfRooms();
+double getPaintPrice();
+double getWallSpace(int roomNumber);
+double calculatePaintGallons(double totalWallSpace);
+double calculateLaborHours(double totalWallSpace);
+double calculatePaintCost(double gallons, double pricePerGallon);
+double calculateLaborCost(double laborHours);
+void displayCostSummary(double gallons, double laborHours, double paintCost, double laborCost);
 
-const int NUM_JUDGES = 5;
+const double WALL_SPACE_PER_GALLON = 110.0;
+const double HOURS_PER_GALLON = 8.0;
+const double LABOR_COST_PER_HOUR = 25.0;
 
 int main() {
-    double scores[NUM_JUDGES];
+    int numberOfRooms = getNumberOfRooms();
+    double pricePerGallon = getPaintPrice();
 
-    getScores(scores, NUM_JUDGES);
+    double totalWallSpace = 0.0;
+    for (int i = 1; i <= numberOfRooms; i++) {
+        totalWallSpace += getWallSpace(i);
+    }
 
-    double finalScore = calculateFinalScore(scores, NUM_JUDGES);
+    double gallonsOfPaint = calculatePaintGallons(totalWallSpace);
+    double laborHours = calculateLaborHours(totalWallSpace);
+    double paintCost = calculatePaintCost(gallonsOfPaint, pricePerGallon);
+    double laborCost = calculateLaborCost(laborHours);
 
-    cout << fixed << setprecision(2);
-    cout << "\nThe contestant's final score is: " << finalScore << endl;
+    displayCostSummary(gallonsOfPaint, laborHours, paintCost, laborCost);
 
     return 0;
 }
 
-void getScores(double scores[], int size) {
-    for (int i = 0; i < size; i++) {
-        do {
-            cout << "Enter score for judge " << (i + 1) << " (0-10): ";
-            cin >> scores[i];
-            if (scores[i] < 0.0 || scores[i] > 10.0) {
-                cout << "Invalid score. Scores must be between 0 and 10. Please try again.\n";
-            }
-        } while (scores[i] < 0.0 || scores[i] > 10.0);
-    }
-}
-
-double calculateFinalScore(double scores[], int size) {
-    double highest = findHighest(scores, size);
-    double lowest = findLowest(scores, size);
-    double sum = 0.0;
-
-    for (int i = 0; i < size; i++) {
-        sum += scores[i];
-    }
-
-    sum -= (highest + lowest);
-
-    return sum / (size - 2);
-}
-
-double findHighest(double scores[], int size) {
-    double highest = scores[0];
-    for (int i = 1; i < size; i++) {
-        if (scores[i] > highest) {
-            highest = scores[i];
+int getNumberOfRooms() {
+    int rooms;
+    do {
+        cout << "Enter the number of rooms to be painted: ";
+        cin >> rooms;
+        if (rooms < 1) {
+            cout << "Number of rooms must be at least 1. Please try again.\n";
         }
-    }
-    return highest;
+    } while (rooms < 1);
+    return rooms;
 }
 
-double findLowest(double scores[], int size) {
-    double lowest = scores[0];
-    for (int i = 1; i < size; i++) {
-        if (scores[i] < lowest) {
-            lowest = scores[i];
+double getPaintPrice() {
+    double price;
+    do {
+        cout << "Enter the price of paint per gallon (minimum $10.00): ";
+        cin >> price;
+        if (price < 10.0) {
+            cout << "Price of paint must be at least $10.00. Please try again.\n";
         }
-    }
-    return lowest;
+    } while (price < 10.0);
+    return price;
+}
+
+double getWallSpace(int roomNumber) {
+    double wallSpace;
+    do {
+        cout << "Enter the wall space in square feet for room " << roomNumber << ": ";
+        cin >> wallSpace;
+        if (wallSpace < 0.0) {
+            cout << "Wall space cannot be negative. Please try again.\n";
+        }
+    } while (wallSpace < 0.0);
+    return wallSpace;
+}
+
+double calculatePaintGallons(double totalWallSpace) {
+    return ceil(totalWallSpace / WALL_SPACE_PER_GALLON);
+}
+
+double calculateLaborHours(double totalWallSpace) {
+    return (totalWallSpace / WALL_SPACE_PER_GALLON) * HOURS_PER_GALLON;
+}
+
+double calculatePaintCost(double gallons, double pricePerGallon) {
+    return gallons * pricePerGallon;
+}
+
+double calculateLaborCost(double laborHours) {
+    return laborHours * LABOR_COST_PER_HOUR;
+}
+
+void displayCostSummary(double gallons, double laborHours, double paintCost, double laborCost) {
+    double totalCost = paintCost + laborCost;
+
+    cout << fixed << setprecision(2);
+    cout << "\nPaint Job Summary:\n";
+    cout << "Gallons of paint required: " << gallons << endl;
+    cout << "Hours of labor required: " << laborHours << endl;
+    cout << "Cost of paint: $" << paintCost << endl;
+    cout << "Labor charges: $" << laborCost << endl;
+    cout << "Total cost of the paint job: $" << totalCost << endl;
 }
